@@ -1,0 +1,221 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>作業レシピ｜Bar SPEC</title>
+
+<style>
+:root{
+  --bg:#0e0c0a;
+  --panel:#1c1915;
+  --panel2:#25211e;
+  --text:#f4f4f4;
+  --muted:#a89984;
+  --accent:#c5a059; /* HUBと統一した金 */
+  --line:rgba(197,160,89,0.2);
+  --ok:#8fd19e;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height: 1.6;
+}
+header{
+  position:sticky;top:0;z-index:10;
+  padding: 16px 14px;
+  text-align:center;
+  background: rgba(14, 12, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+header .ttl{
+  font-weight:800;
+  letter-spacing:1px;
+  color: var(--accent);
+}
+header .sub{
+  margin-top:4px;
+  font-size:11px;
+  color:var(--muted);
+}
+main{padding:16px;max-width:800px;margin:0 auto}
+
+.hero{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
+}
+@media(min-width:900px){
+  .hero{grid-template-columns: 1.05fr .95fr; align-items:start;}
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:20px;
+}
+h1{
+  margin:0 0 8px;
+  font-size:20px;
+  color: #fff;
+}
+.badges{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin:12px 0;
+}
+.badge{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:4px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  color:var(--muted);
+}
+.badge.ok{color:#000;background:var(--ok);border:none;font-weight:700}
+
+.imgWrap{
+  overflow:hidden;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#000;
+  margin-top: 10px;
+}
+.imgWrap img{
+  width:100%;
+  display:block;
+}
+
+.sectionTitle{
+  margin:24px 0 10px;
+  font-size:13px;
+  font-weight: bold;
+  color:var(--accent);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  border-radius:8px;
+  border:1px solid var(--line);
+  overflow: hidden;
+}
+.table th, .table td{
+  padding:12px;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+.table th{
+  width:50%; /* 日本語が入りやすいよう少し広めに */
+  background:var(--panel2);
+  color:var(--muted);
+  text-align: left;
+  font-weight: normal;
+}
+.table tr:last-child th, .table tr:last-child td{border-bottom:none}
+
+.steps{
+  margin:0;
+  padding-left:20px;
+  color:#ddd;
+}
+.steps li { margin-bottom: 8px; }
+
+.callout{
+  margin-top:20px;
+  padding:15px;
+  border-radius:8px;
+  background:rgba(197,160,89,0.05);
+  border:1px dashed var(--accent);
+  font-size:13px;
+}
+
+footer{
+  padding:40px 16px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+}
+.backLink{
+  display:inline-flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size:14px;
+  color:var(--accent);
+  text-decoration:none;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="ttl">SPEC RECIPE</div>
+  <div class="sub">FOR STAFF ONLY</div>
+</header>
+
+<main>
+<a href="index.html" class="backLink">← Recipe HUBに戻る</a>
+
+<section class="hero">
+  <div class="card">
+    <h1>Coffee Martini</h1>
+    <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">コーヒーマティーニ</div>
+
+    <div class="badges">
+      <span class="badge ok">シェイク提供</span>
+      <span class="badge">コーヒー系</span>
+      <span class="badge">再現性重視</span>
+    </div>
+
+    <div class="sectionTitle">レシピ（1杯）</div>
+    <table class="table">
+      <tr><th>カルア</th><td><strong>15ml</strong></td></tr>
+      <tr><th>セントナリオ</th><td><strong>10ml</strong></td></tr>
+      <tr><th>ジェムソン</th><td><strong>15ml</strong></td></tr>
+      <tr><th>コーヒースミノフ</th><td><strong>5ml</strong></td></tr>
+      <tr><th>杜氏が入れたコーヒー</th><td><strong>30ml</strong></td></tr>
+    </table>
+
+    <div class="sectionTitle">作り方</div>
+    <ol class="steps">
+      <li>シェーカーに氷を<strong>8〜9分目</strong>まで入れる。</li>
+      <li>材料をすべて<strong>計量して</strong>投入する。</li>
+      <li><strong>12〜15秒</strong>しっかりシェイク（泡立ちを作る）。</li>
+      <li>冷やしたカクテルグラスにストレインする。</li>
+      <li>コーヒー豆を1粒（中央）で仕上げ、提供。</li>
+    </ol>
+
+    <div class="callout">
+      <strong>運用ルール</strong><br>
+      ・本レシピは<strong>必ず計量</strong>（「適量」は禁止）<br>
+      ・差異が出た場合は、氷量／シェイク時間を優先的に確認
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sectionTitle">参考写真</div>
+    <div class="imgWrap">
+      <img src="images/coffee-cocktail.jpg" alt="コーヒーマティーニ">
+    </div>
+
+    <div class="sectionTitle">チェックポイント</div>
+    <table class="table">
+      <tr><th>フォーム</th><td>きめ細かい泡が均一か</td></tr>
+      <tr><th>温度</th><td>しっかり冷えているか</td></tr>
+      <tr><th>見た目</th><td>コーヒー豆がセンターにあるか</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>Bar SPEC Internal Use Only</footer>
+</main>
+</body>
+</html>
