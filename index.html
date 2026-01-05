@@ -3,16 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>SPEC-recipes｜Bar SPEC</title>
+  <title>SPECPEDIA｜Bar SPEC</title>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c5a059">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="SPEC-recipes">
+  <meta name="apple-mobile-web-app-title" content="SPECPEDIA">
   <link rel="apple-touch-icon" href="/icon-180.png">
 
+  <!-- キャッシュ対策（Chrome/PWA向け） -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <style>
-    :root {
+    :root { 
       --bg:#0e0c0a; --panel:#1c1915; --panel2:#25211e;
       --accent:#c5a059; --text:#f4f4f4; --muted:#a89984;
       --line:rgba(197,160,89,0.2); --standard:#ef4444;
@@ -21,186 +26,115 @@
       --safe-top:env(safe-area-inset-top);
       --safe-bottom:env(safe-area-inset-bottom);
     }
-    body {
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      padding-bottom:calc(80px + var(--safe-bottom));
-      line-height:1.6;
+    body { 
+      margin:0; font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif; 
+      background:var(--bg); color:var(--text); padding-bottom:calc(80px + var(--safe-bottom));
+      line-height:1.6; -webkit-text-size-adjust:100%;
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
+    /* Sticky Header & Navigation */
     .sticky-header-zone {
       position:sticky; top:0; z-index:1000;
-      background:rgba(14,12,10,.95);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--line);
-      padding-top:var(--safe-top);
+      background:rgba(14,12,10,.95); backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line); padding-top:var(--safe-top);
     }
-    header {
-      padding:10px 15px;
-      height:50px;
-      display:flex;
-      align-items:center;
-    }
-    .logo {
-      font-size:16px;
-      font-weight:800;
-      letter-spacing:2px;
-      color:var(--accent);
-    }
+    header { padding:10px 15px; display:flex; align-items:center; height:50px; }
+    .logo { font-size:16px; font-weight:800; letter-spacing:2px; color:var(--accent); }
 
-    .view-tabs {
-      display:flex;
-      gap:6px;
-      padding:0 10px 10px;
-    }
+    .view-tabs { display:flex; gap:6px; padding:0 10px 10px; }
     .tab-btn {
-      flex:1;
-      padding:8px 0;
-      text-align:center;
-      background:var(--panel2);
-      border:1px solid var(--line);
-      color:#888;
-      border-radius:6px;
-      font-weight:bold;
-      font-size:11px;
-      cursor:pointer;
+      flex:1; padding:8px 0; text-align:center; background:var(--panel2);
+      border:1px solid var(--line); color:#888; border-radius:6px;
+      font-weight:bold; cursor:pointer; font-size:11px;
     }
-    .tab-btn.active {
-      background:var(--accent);
-      color:#000;
-      border-color:var(--accent);
-    }
+    .tab-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
 
-    .scroll-nav-container {
-      overflow-x:auto;
-      padding:0 10px 10px;
-    }
-    .nav-list {
-      display:flex;
-      gap:8px;
-    }
+    .scroll-nav-container { overflow-x:auto; padding:0 10px 10px; display:block; }
+    .nav-list { display:flex; gap:8px; }
     .nav-tag {
-      white-space:nowrap;
-      padding:6px 12px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:20px;
-      font-size:11px;
-      color:var(--accent);
-      text-decoration:none;
+      white-space:nowrap; padding:6px 12px; background:var(--panel);
+      border:1px solid var(--line); border-radius:20px; font-size:11px;
+      color:var(--accent); text-decoration:none;
     }
 
-    main {
-      padding:15px;
-      max-width:800px;
-      margin:0 auto;
-    }
-
+    main { padding:15px; max-width:800px; margin:0 auto; }
     .search-box { margin-bottom:20px; }
     .search-box input {
-      width:100%;
-      padding:12px;
-      background:var(--panel);
-      border:1px solid var(--accent);
-      border-radius:8px;
-      color:#fff;
-      font-size:16px;
+      width:100%; padding:12px; background:var(--panel); border:1px solid var(--accent);
+      border-radius:8px; color:#fff; font-size:16px; outline:none;
     }
 
     section { margin-bottom:40px; scroll-margin-top:160px; }
+    #food-view h2 {
+      font-size:18px!important; color:var(--text); border-left:5px solid var(--accent);
+      padding-left:15px; margin:30px 0 15px; text-transform:uppercase;
+    }
+    .dessert-header { border-left-color:#ff9f43!important; }
 
-    .hidden { display:none !important; }
+    .recipe-item, .standard-link, .card-theory {
+      background:var(--panel); border:1px solid var(--line); border-radius:10px;
+      overflow:hidden; display:block; text-decoration:none; margin-bottom:10px;
+    }
+    .recipe-header { padding:15px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+    .recipe-info b { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:15px; color:#fff; }
+    .recipe-info span { font-size:11px; color:var(--muted); }
+    .recipe-content { max-height:0; overflow:hidden; transition:max-height .25s ease-out; background:rgba(255,255,255,.02); }
+    .item-open .recipe-content { max-height:1000px; border-top:1px solid var(--line); }
+    .recipe-detail { padding:15px; font-size:14px; color:#ddd; }
 
-    /* cards */
-    .recipe-item, .standard-link {
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:10px;
-      margin-bottom:10px;
-      text-decoration:none;
-      display:block;
-      overflow:hidden;
-    }
-    .recipe-header {
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      cursor:pointer;
-    }
-    .recipe-info b {
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-      font-size:15px;
-    }
-    .recipe-info span {
-      font-size:11px;
-      color:var(--muted);
-    }
-    .recipe-content {
-      max-height:0;
-      overflow:hidden;
-      transition:max-height .25s ease;
-    }
-    .item-open .recipe-content {
-      max-height:1000px;
-      border-top:1px solid var(--line);
-    }
-    .recipe-detail {
-      padding:15px;
-      font-size:14px;
-      color:#ddd;
-    }
+    .app-note { background:var(--panel2); padding:12px; border-radius:8px; font-size:13px; border-left:3px solid var(--todo); margin-top:12px; }
 
-    .badge {
-      font-size:10px;
-      padding:2px 6px;
-      border-radius:4px;
-      font-weight:700;
-      color:#000;
-    }
-    .badge.tag { background:var(--panel2); color:var(--muted); border:1px solid var(--line); }
+    .badge { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; color:#000; }
+    .badge.tag { background:var(--panel2); color:var(--muted); border:1px solid var(--line); font-weight:400; }
     .badge.strong { background:#ef4444; color:#fff; }
-    .badge.normal { background:#ffcc00; }
-    .badge.weak { background:#8fd19e; }
-    .badge.none { background:#a29bfe; }
+    .badge.normal { background:#ffcc00; color:#000; }
+    .badge.weak { background:#8fd19e; color:#000; }
+    .badge.none { background:#a29bfe; color:#000; }
 
-    #auth-overlay {
-      position:fixed;
-      inset:0;
-      background:var(--bg);
-      z-index:9999;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      padding:20px;
-    }
+    .card-theory-full { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
+    .formula-box { background:var(--panel2); padding:15px; border-radius:8px; margin:10px 0; border:1px dashed var(--accent); }
+    .ratio { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; font-weight:700; color:var(--accent); font-size:14px; }
+    .theory-table { width:100%; border-collapse:collapse; margin-bottom:15px; }
+    .theory-table th, .theory-table td { padding:10px; border-bottom:1px solid var(--line); font-size:14px; text-align:left; }
+    .theory-table th { color:var(--muted); font-weight:500; width:45%; }
+    .theory-steps { padding-left:18px; margin:0; font-size:14px; color:var(--muted); }
+
+    .food-card { display:flex; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:8px; height:100px; }
+    .food-img { width:100px; height:100px; object-fit:cover; flex-shrink:0; background:#222; cursor:pointer; }
+    .food-body { padding:10px 12px; flex:1; display:flex; flex-direction:column; justify-content:center; }
+    .food-body b { color:var(--accent); font-size:14px; margin-bottom:4px; }
+    .todo-box { font-size:11px; color:var(--muted); line-height:1.4; }
+
+    #imageModal { display:none; position:fixed; z-index:2000; inset:0; background:rgba(0,0,0,.95); justify-content:center; align-items:center; }
+    #imageModal.show { display:flex; }
+    #modalImg { max-width:95%; max-height:90%; border-radius:8px; border:2px solid var(--accent); }
+
+    .arrow { color:var(--accent); font-size:10px; transition:transform .3s; }
+    .item-open .arrow { transform:rotate(180deg); }
+    .hidden { display:none!important; }
+
+    #auth-overlay { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; padding:20px; }
   </style>
 </head>
-
 <body>
 
 <div id="auth-overlay">
-  <div class="logo" style="font-size:24px;margin-bottom:20px;">SPEC-recipes</div>
-  <input id="pass-input" type="password" placeholder="Password"
-    style="width:80%;max-width:300px;padding:15px;background:var(--panel);
-    border:1px solid var(--accent);border-radius:8px;color:#fff;font-size:18px;text-align:center;">
+  <div class="logo" style="font-size:24px; margin-bottom:20px;">SPECPEDIA</div>
+  <input type="password" id="pass-input" placeholder="Password"
+    style="width:80%; max-width:300px; padding:15px; background:var(--panel);
+    border:1px solid var(--accent); border-radius:8px; color:#fff; text-align:center; font-size:18px;">
   <button onclick="checkAuth()"
-    style="width:80%;max-width:300px;padding:12px;margin-top:15px;
-    background:var(--accent);border:none;border-radius:8px;font-weight:bold;">
+    style="width:80%; max-width:300px; padding:12px; background:var(--accent);
+    color:#000; border:none; border-radius:8px; font-weight:bold; margin-top:15px;">
     ENTER
   </button>
 </div>
 
 <div class="sticky-header-zone">
-  <header><div class="logo">SPEC-recipes</div></header>
+  <header><div class="logo">SPECPEDIA</div></header>
 
-  <!-- ★ 並び確定：Cocktail / Food / Theory -->
+  <!-- タブ順：Cocktail / Food / Theory -->
   <div class="view-tabs">
     <div class="tab-btn active" data-view="cocktail" onclick="switchView('cocktail')">Cocktail</div>
     <div class="tab-btn" data-view="food" onclick="switchView('food')">Food</div>
@@ -209,68 +143,213 @@
 
   <div id="cocktail-nav" class="scroll-nav-container">
     <div class="nav-list">
-      <a href="#standard" class="nav-tag" style="color:var(--standard);border-color:var(--standard)">STANDARD</a>
+      <a href="#standard" class="nav-tag" style="color:var(--standard); border-color:var(--standard);">STANDARD</a>
       <a href="#gin" class="nav-tag">Gin</a>
       <a href="#vodka" class="nav-tag">Vodka</a>
       <a href="#rum" class="nav-tag">Rum</a>
       <a href="#tequila" class="nav-tag">Tequila</a>
       <a href="#whisky" class="nav-tag">Whisky</a>
+      <a href="#brandy" class="nav-tag">Brandy</a>
+      <a href="#liqueur" class="nav-tag">Liqueur</a>
+      <a href="#wine" class="nav-tag">Wine</a>
+      <a href="#beer" class="nav-tag">Beer</a>
+      <a href="#mocktail" class="nav-tag" style="color:#8fd19e; border-color:#8fd19e;">Mocktail</a>
     </div>
   </div>
 </div>
 
 <main>
-  <div class="search-box">
-    <input id="recipeSearch" type="text" placeholder="検索..." onkeyup="filterAll()">
-  </div>
+  <div class="search-box"><input type="text" id="recipeSearch" placeholder="検索..." onkeyup="filterAll()"></div>
 
   <div id="cocktail-view">
+    <section id="standard">
+      <h2 style="color:var(--standard); border-left-color:var(--standard);">SPEC-Standard</h2>
+      <div class="recipe-grid">
+        <a href="old-fashioned.html" class="standard-link">
+          <div class="recipe-header">
+            <div class="recipe-info">
+              <b>オールドファッションド <span class="badge tag">ショート</span> <span class="badge strong">強い</span></b>
+              <span>Old Fashioned</span>
+            </div>
+            <div class="arrow">VIEW DETAIL →</div>
+          </div>
+        </a>
+        <a href="coffee-martini.html" class="standard-link">
+          <div class="recipe-header">
+            <div class="recipe-info">
+              <b>エスプレッソマティーニ <span class="badge tag">ショート</span> <span class="badge strong">強い</span></b>
+              <span>Coffee Martini</span>
+            </div>
+            <div class="arrow">VIEW DETAIL →</div>
+          </div>
+        </a>
+      </div>
+    </section>
     <div id="recipe-container"></div>
   </div>
 
   <div id="food-view" class="hidden">
-    <p>Food contents here</p>
+    <div id="food-container">
+      <section><h2>🧀 おつまみ (Appetizer)</h2><div id="food-appetizer"></div></section>
+      <section><h2>🍝 お食事 (Meal)</h2><div id="food-meal"></div></section>
+      <section><h2 class="dessert-header">🍫 デザート (Dessert)</h2><div id="food-dessert"></div></section>
+    </div>
   </div>
 
   <div id="theory-view" class="hidden">
-    <p>Theory contents here</p>
+    <section id="theory-basics">
+      <h2>基礎理論：カクテルの方程式</h2>
+      <div class="card-theory-full">
+        <div class="formula-box">
+          <strong>1. ショート・サワー型（方程式 3：1：1）</strong>
+          <div class="ratio">ベース 30〜45ml <span>+</span> ホワイトキュラソー 15ml <span>+</span> レモン 15ml</div>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
+
+<div id="imageModal" onclick="this.classList.remove('show')"><img id="modalImg" src=""></div>
 
 <script>
 const STAFF_PASS = "spec1234";
 
-function checkAuth(){
-  if(document.getElementById('pass-input').value === STAFF_PASS){
-    localStorage.setItem('spec_auth','true');
-    document.getElementById('auth-overlay').style.display='none';
+function checkAuth() {
+  if (document.getElementById('pass-input').value === STAFF_PASS) {
+    localStorage.setItem('spec_auth', 'true');
+    document.getElementById('auth-overlay').style.display = 'none';
   }
 }
 
 window.onload = () => {
-  if(localStorage.getItem('spec_auth')==='true'){
-    document.getElementById('auth-overlay').style.display='none';
+  if (localStorage.getItem('spec_auth') === 'true') {
+    document.getElementById('auth-overlay').style.display = 'none';
   }
+  loadRecipes();
+  renderFood();
 };
 
-function switchView(view){
-  ['cocktail','food','theory'].forEach(v=>{
-    document.getElementById(v+'-view').classList.toggle('hidden', v!==view);
+function switchView(view) {
+  ['cocktail','food','theory'].forEach(v => {
+    document.getElementById(v + '-view').classList.toggle('hidden', v !== view);
   });
-  document.getElementById('cocktail-nav').style.display = (view==='cocktail')?'block':'none';
-  document.querySelectorAll('.tab-btn').forEach(btn=>{
-    btn.classList.toggle('active', btn.dataset.view === view);
-  });
+  document.getElementById('cocktail-nav').style.display = (view === 'cocktail') ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.view === view)
+  );
   window.scrollTo(0,0);
 }
 
-function filterAll(){
-  const q = document.getElementById('recipeSearch').value.toLowerCase();
-  document.querySelectorAll('.recipe-item,.standard-link').forEach(el=>{
-    el.classList.toggle('hidden', !el.innerText.toLowerCase().includes(q));
+function loadRecipes() {
+  fetch('cocktails.json?v=' + new Date().getTime())
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('recipe-container');
+      container.innerHTML = "";
+      const grouped = data.reduce((acc, item) => {
+        if (!acc[item.base]) acc[item.base] = [];
+        acc[item.base].push(item);
+        return acc;
+      }, {});
+      Object.keys(grouped).forEach(base => {
+        const sec = document.createElement('section');
+        sec.id = base;
+        sec.innerHTML = `<h2>${base.toUpperCase()}</h2><div class="recipe-grid"></div>`;
+        const grid = sec.querySelector('.recipe-grid');
+        grouped[base].forEach(item => {
+          let sClass = "normal";
+          if (item.strength === "強い") sClass = "strong";
+          if (item.strength === "弱い") sClass = "weak";
+          if (item.strength === "ノンアル") sClass = "none";
+          let mColor = "";
+          if (item.method.includes("ビルド")) mColor = "var(--build)";
+          if (item.method.includes("シェイク")) mColor = "var(--shake)";
+          if (item.method.includes("ステア")) mColor = "var(--stir)";
+          const div = document.createElement('div');
+          div.className = 'recipe-item';
+          div.innerHTML = `
+            <div class="recipe-header" onclick="this.parentElement.classList.toggle('item-open')">
+              <div class="recipe-info">
+                <b>${item.name} <span class="badge tag">${item.style}</span> <span class="badge ${sClass}">${item.strength}</span></b>
+                <span>${item.en} <small style="color:${mColor}">/ ${item.method}</small></span>
+              </div>
+              <div class="arrow">▼</div>
+            </div>
+            <div class="recipe-content">
+              <div class="recipe-detail">
+                <div style="color:var(--accent); font-size:10px; margin-bottom:8px;">RECIPE</div>
+                <div style="font-size:15px; margin-bottom:15px; border-left:1px solid var(--accent); padding-left:10px;">${item.recipe}</div>
+                <div class="app-note">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; font-size:12px; color:var(--muted);">
+                    <div>Glass: ${item.glass}</div>
+                    <div>Ice: ${item.ice}</div>
+                  </div>
+                  <div style="margin-top:10px;">${item.notes}</div>
+                </div>
+              </div>
+            </div>`;
+          grid.appendChild(div);
+        });
+        container.appendChild(sec);
+      });
+    });
+}
+
+function renderFood() {
+  const foods = [
+    {cat:"appetizer", n:"Assorted Cheese", i:"assorted-cheese.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Meiji Cheese", i:"meiji-cheese.jpeg", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Tuna Jerky", i:"tuna-jerky.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Yamagata Pork Jerky", i:"yamagata-pork-jerky.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Yamagata Pork Salami", i:"yamagata-pork-salami.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Fresh Peppercorns", i:"fresh-peppercorns.png", prep:"個食盛り付け"},
+    {cat:"meal", n:"Today's Pasta", i:"pasta.jpeg", prep:"ボイル調理"},
+    {cat:"meal", n:"Penne", i:"penne.jpeg", prep:"ボイル調理"},
+    {cat:"meal", n:"Daily Special Pizza", i:"daily-special-pizza.png", prep:"オーブン加熱"},
+    {cat:"meal", n:"Cheese Sandwich", i:"cheese-sandwich.png", prep:"トースト提供"},
+    {cat:"dessert", n:"Truffle Crispy Cheese Pie", i:"crispy-cheese-pie.png", prep:"個食パック"},
+    {cat:"dessert", n:"Chocolate Snacks", i:"chocolate-snacks.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Assorted Chocolates", i:"assorted-chocolates.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Raisin Butter", i:"raisin-butter.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Yokan", i:"yokan.png", prep:"カット提供"}
+  ];
+  const containers = {
+    appetizer: document.getElementById('food-appetizer'),
+    meal: document.getElementById('food-meal'),
+    dessert: document.getElementById('food-dessert')
+  };
+  Object.values(containers).forEach(c => c.innerHTML = "");
+  foods.forEach(f => {
+    const isMeal = f.cat === "meal";
+    const card = `<div class="food-card">
+      <img src="images/${f.i}" class="food-img">
+      <div class="food-body">
+        <b>${f.n}</b>
+        <div class="todo-box"><span style="color:${isMeal?'var(--standard)':'var(--todo)'}; font-weight:bold;">●</span> ${f.prep}</div>
+      </div>
+    </div>`;
+    if (containers[f.cat]) containers[f.cat].innerHTML += card;
   });
 }
-</script>
 
+function filterAll() {
+  const q = document.getElementById('recipeSearch').value.toLowerCase();
+  document.querySelectorAll('.recipe-item, .standard-link, .food-card')
+    .forEach(el => el.classList.toggle('hidden', !el.innerText.toLowerCase().includes(q)));
+}
+
+let lastTap = 0;
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('food-img')) {
+    const now = Date.now();
+    if (now - lastTap < 300 && now - lastTap > 0) {
+      document.getElementById('modalImg').src = e.target.src;
+      document.getElementById('imageModal').classList.add('show');
+      e.preventDefault();
+    }
+    lastTap = now;
+  }
+});
+</script>
 </body>
 </html>
