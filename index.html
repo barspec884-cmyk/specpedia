@@ -84,56 +84,30 @@
   <div id="report-view">
     <div class="card"><div style="display:flex; gap:8px;"><button id="btnOpenMode" onclick="setMode('開店')" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--accent); color:#000; font-weight:bold; cursor:pointer;">開店</button><button id="btnCloseMode" onclick="setMode('閉店')" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--panel2); color:#fff; font-weight:bold; cursor:pointer;">閉店</button></div></div>
     
-    <form id="openSection" class="card">
-      <h2>開店チェック</h2>
 
-      <fieldset class="check-group">
-        <legend>2F エリア</legend>
-        <ul>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="2f_toilet">
-              2F トイレ・床・鏡
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="2f_tables">
-              2F テーブル・椅子
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="2f_supplies">
-              2F 備品・menuチェック
-            </label>
-          </li>
-        </ul>
-      </fieldset>
+<div class="check-section">
+  <h2>開店チェック</h2>
+  
+  <label style="color:var(--ng); font-weight:bold;">
+    <input type="checkbox" value="2F トイレ・床・鏡"> 2F トイレ・床・鏡
+  </label>
+  
+  <label><input type="checkbox" value="2F テーブル・椅子"> 2F テーブル・椅子</label>
+  <label><input type="checkbox" value="2F 備品・menuチェック"> 2F 備品・menuチェック</label>
+  
+  <hr style="border:0; border-top:1px solid #eee; margin:10px 0;"> <label><input type="checkbox" value="1F トイレ・床・鏡"> 1F トイレ・床・鏡</label>
+  <label><input type="checkbox" value="1F カウンター・床"> 1F カウンター・床</label>
+  <label><input type="checkbox" value="1F キッチン・バックバー"> 1F キッチン・バックバー</label>
+  <label><input type="checkbox" value="階段・エントランス"> 階段・エントランス</label>
+  
+  <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+  
+  <label><input type="checkbox" value="HACCP入力完了"> HACCP入力完了</label>
 
-      <fieldset class="check-group">
-        <legend>1F エリア</legend>
-        <ul>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="1階">
-              1F トイレ・床・鏡
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="1f_counter">
-              1F カウンター・床
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="1f_kitchen">
-              1F キッチン・バックバー
-            </label>
-          </li>
-        </ul>
-      </fieldset>
+  <label style="border:2px solid var(--ng); padding:8px; border-radius:8px; margin-top:10px;">
+    <input type="checkbox" value="レジ・在庫確認"> レジ・在庫確認（準備完了）
+  </label>
+</div>
 
       <fieldset class="check-group">
         <legend>共通・管理</legend>
