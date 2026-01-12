@@ -11,7 +11,6 @@
   <meta name="apple-mobile-web-app-title" content="SPECPEDIA">
   <link rel="apple-touch-icon" href="/icon-180.png">
 
-  <!-- キャッシュ対策（Chrome/PWA向け） -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -33,7 +32,6 @@
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-    /* Sticky Header & Navigation */
     .sticky-header-zone {
       position:sticky; top:0; z-index:1000;
       background:rgba(14,12,10,.95); backdrop-filter:blur(10px);
@@ -66,7 +64,7 @@
     }
 
     section { margin-bottom:40px; scroll-margin-top:160px; }
-    #food-view h2 {
+    h2 {
       font-size:18px!important; color:var(--text); border-left:5px solid var(--accent);
       padding-left:15px; margin:30px 0 15px; text-transform:uppercase;
     }
@@ -98,7 +96,6 @@
     .theory-table { width:100%; border-collapse:collapse; margin-bottom:15px; }
     .theory-table th, .theory-table td { padding:10px; border-bottom:1px solid var(--line); font-size:14px; text-align:left; }
     .theory-table th { color:var(--muted); font-weight:500; width:45%; }
-    .theory-steps { padding-left:18px; margin:0; font-size:14px; color:var(--muted); }
 
     .food-card { display:flex; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:8px; height:100px; }
     .food-img { width:100px; height:100px; object-fit:cover; flex-shrink:0; background:#222; cursor:pointer; }
@@ -134,11 +131,9 @@
 <div class="sticky-header-zone">
   <header><div class="logo">SPECPEDIA</div></header>
 
-  <!-- タブ順：Cocktail / Food / Theory -->
   <div class="view-tabs">
     <div class="tab-btn active" data-view="cocktail" onclick="switchView('cocktail')">Cocktail</div>
     <div class="tab-btn" data-view="food" onclick="switchView('food')">Food</div>
-    <div class="tab-btn" data-view="theory" onclick="switchView('theory')">Theory</div>
   </div>
 
   <div id="cocktail-nav" class="scroll-nav-container">
@@ -154,6 +149,7 @@
       <a href="#wine" class="nav-tag">Wine</a>
       <a href="#beer" class="nav-tag">Beer</a>
       <a href="#mocktail" class="nav-tag" style="color:#8fd19e; border-color:#8fd19e;">Mocktail</a>
+      <a href="#theory-section" class="nav-tag" style="color:var(--accent); border-color:var(--accent);">THEORY</a>
     </div>
   </div>
 </div>
@@ -185,94 +181,54 @@
         </a>
       </div>
     </section>
-	  <section id="theory-methods">
-  <h2>基礎理論：カクテルの基本技法</h2>
 
-  <div class="card-theory-full">
-    <table class="theory-table">
-      <tr>
-        <th>ビルド（Build）</th>
-        <td>
-          グラス内で直接作る最もシンプルな技法。<br>
-          炭酸系に最適で、注ぐ順番と分量が味を左右する。
-        </td>
-      </tr>
-      <tr>
-        <th>代表例</th>
-        <td>ジントニック / ラムコーク</td>
-      </tr>
-    </table>
-
-    <table class="theory-table">
-      <tr>
-        <th>ステア（Stir）</th>
-        <td>
-          ミキシンググラスで静かに撹拌する技法。<br>
-          透明感があり、アルコール感を保った仕上がり。
-        </td>
-      </tr>
-      <tr>
-        <th>代表例</th>
-        <td>マティーニ / マンハッタン</td>
-      </tr>
-    </table>
-
-    <table class="theory-table">
-      <tr>
-        <th>ブレンド（Blend）</th>
-        <td>
-          ブレンダーで氷ごと攪拌する技法。<br>
-          フローズン向けで、なめらかな口当たり。
-        </td>
-      </tr>
-      <tr>
-        <th>代表例</th>
-        <td>フローズン・ダイキリ / フローズン・マルガリータ</td>
-      </tr>
-    </table>
-  </div>
-</section>
-
-<section id="theory-base-change">
-  <h2>基礎理論：ベース変更とカクテル名称</h2>
-
-  <div class="card-theory-full">
-    <p style="font-size:14px; color:var(--muted); margin-bottom:12px;">
-      カクテルは副材料の構成が同じでも、<br>
-      <strong>ベーススピリッツが変わると名称が変化</strong>する。
-    </p>
-
-    <div class="formula-box">
-      <strong>基本構造（XYZ型）</strong>
-      <div class="ratio">
-        ベーススピリッツ
-        <span>＋</span>
-        ホワイトキュラソー
-        <span>＋</span>
-        レモンジュース
-      </div>
-    </div>
-
-    <table class="theory-table">
-      <tr><th>ラム</th><td>XYZ</td></tr>
-      <tr><th>ウォッカ</th><td>バラライカ</td></tr>
-      <tr><th>ジン</th><td>ホワイトレディ</td></tr>
-      <tr><th>ブランデー</th><td>サイドカー</td></tr>
-      <tr><th>ウイスキー</th><td>サイレント・サード</td></tr>
-      <tr><th>テキーラ</th><td>マルガリータ</td></tr>
-    </table>
-
-    <div class="app-note">
-      暗記ではなく「構造理解」で覚えるのが最短。<br>
-      クイズ化・教育用展開に最適な理論。
-    </div>
-  </div>
-</section>
-
-	  
-	  
-	  
     <div id="recipe-container"></div>
+
+    <div id="theory-section">
+      <section id="theory-basics">
+        <h2>基礎理論：カクテルの方程式</h2>
+        <div class="card-theory-full">
+          <div class="formula-box">
+            <strong>1. ショート・サワー型（方程式 3：1：1）</strong>
+            <div class="ratio">ベース 30〜45ml <span>+</span> ホワイトキュラソー 15ml <span>+</span> レモン 15ml</div>
+          </div>
+          <div class="app-note">
+            暗記ではなく「構造理解」で覚えるのが最短。<br>
+            クイズ化・教育用展開に最適な理論。
+          </div>
+        </div>
+      </section>
+
+      <section id="theory-methods">
+        <h2>基礎理論：カクテルの基本技法</h2>
+        <div class="card-theory-full">
+          <table class="theory-table">
+            <tr><th>ビルド（Build）</th><td>グラス内で直接作る。炭酸系に最適。</td></tr>
+            <tr><th>ステア（Stir）</th><td>ミキシンググラスで撹拌。透明感とアルコール感。</td></tr>
+            <tr><th>シェイク（Shake）</th><td>シェーカーで急冷・混和。まろやかさ。</td></tr>
+            <tr><th>ブレンド（Blend）</th><td>ブレンダーを使用。フローズン向け。</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section id="theory-base-change">
+        <h2>基礎理論：ベース変更と名称</h2>
+        <div class="card-theory-full">
+          <div class="formula-box">
+            <strong>基本構造（XYZ型）</strong>
+            <div class="ratio">ベース <span>＋</span> Wキュラソー <span>＋</span> レモン</div>
+          </div>
+          <table class="theory-table">
+            <tr><th>ラム</th><td>XYZ</td></tr>
+            <tr><th>ウォッカ</th><td>バラライカ</td></tr>
+            <tr><th>ジン</th><td>ホワイトレディ</td></tr>
+            <tr><th>ブランデー</th><td>サイドカー</td></tr>
+            <tr><th>ウイスキー</th><td>サイレント・サード</td></tr>
+            <tr><th>テキーラ</th><td>マルガリータ</td></tr>
+          </table>
+        </div>
+      </section>
+    </div>
   </div>
 
   <div id="food-view" class="hidden">
@@ -283,17 +239,6 @@
     </div>
   </div>
 
-  <div id="theory-view" class="hidden">
-    <section id="theory-basics">
-      <h2>基礎理論：カクテルの方程式</h2>
-      <div class="card-theory-full">
-        <div class="formula-box">
-          <strong>1. ショート・サワー型（方程式 3：1：1）</strong>
-          <div class="ratio">ベース 30〜45ml <span>+</span> ホワイトキュラソー 15ml <span>+</span> レモン 15ml</div>
-        </div>
-      </div>
-    </section>
-  </div>
 </main>
 
 <div id="imageModal" onclick="this.classList.remove('show')"><img id="modalImg" src=""></div>
@@ -317,7 +262,7 @@ window.onload = () => {
 };
 
 function switchView(view) {
-  ['cocktail','food','theory'].forEach(v => {
+  ['cocktail','food'].forEach(v => {
     document.getElementById(v + '-view').classList.toggle('hidden', v !== view);
   });
   document.getElementById('cocktail-nav').style.display = (view === 'cocktail') ? 'block' : 'none';
@@ -344,14 +289,9 @@ function loadRecipes() {
         sec.innerHTML = `<h2>${base.toUpperCase()}</h2><div class="recipe-grid"></div>`;
         const grid = sec.querySelector('.recipe-grid');
         grouped[base].forEach(item => {
-          let sClass = "normal";
-          if (item.strength === "強い") sClass = "strong";
-          if (item.strength === "弱い") sClass = "weak";
-          if (item.strength === "ノンアル") sClass = "none";
-          let mColor = "";
-          if (item.method.includes("ビルド")) mColor = "var(--build)";
-          if (item.method.includes("シェイク")) mColor = "var(--shake)";
-          if (item.method.includes("ステア")) mColor = "var(--stir)";
+          let sClass = item.strength === "強い" ? "strong" : (item.strength === "弱い" ? "weak" : (item.strength === "ノンアル" ? "none" : "normal"));
+          let mColor = item.method.includes("ビルド") ? "var(--build)" : (item.method.includes("シェイク") ? "var(--shake)" : (item.method.includes("ステア") ? "var(--stir)" : ""));
+          
           const div = document.createElement('div');
           div.className = 'recipe-item';
           div.innerHTML = `
