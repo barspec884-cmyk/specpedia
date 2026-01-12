@@ -1,342 +1,355 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>SPEC-OPS｜Bar SPEC</title>
+  <title>SPECPEDIA｜Bar SPEC</title>
 
-  <link rel="icon" type="image/png" href="/icon-192.png?v=2" sizes="192x192"> 
-  <link rel="apple-touch-icon" href="/icon-180.png?v=2"> 
-  <link rel="manifest" href="/manifest.json?v=2">
-
+  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c5a059">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="SPEC-OPS">
+  <meta name="apple-mobile-web-app-title" content="SPECPEDIA">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+
+  <!-- キャッシュ対策（Chrome/PWA向け） -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <style>
-    :root{ 
+    :root { 
       --bg:#0e0c0a; --panel:#1c1915; --panel2:#25211e;
       --accent:#c5a059; --text:#f4f4f4; --muted:#a89984;
-      --line:rgba(197,160,89,0.2); --ok:#8fd19e; --ng:#ff8f8f; --todo:#ffcc00; --blue:#7da7ff;
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
+      --line:rgba(197,160,89,0.2); --standard:#ef4444;
+      --build:#8fd19e; --shake:#82ccdd; --stir:#a29bfe;
+      --todo:#ffcc00;
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
     }
-    body{ margin:0; font-family:sans-serif; background:var(--bg); color:var(--text); padding-bottom: calc(80px + var(--safe-bottom)); line-height: 1.6; }
-    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+    body { 
+      margin:0; font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif; 
+      background:var(--bg); color:var(--text); padding-bottom:calc(80px + var(--safe-bottom));
+      line-height:1.6; -webkit-text-size-adjust:100%;
+    }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
+    /* Sticky Header & Navigation */
+    .sticky-header-zone {
+      position:sticky; top:0; z-index:1000;
+      background:rgba(14,12,10,.95); backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line); padding-top:var(--safe-top);
+    }
+    header { padding:10px 15px; display:flex; align-items:center; height:50px; }
+    .logo { font-size:16px; font-weight:800; letter-spacing:2px; color:var(--accent); }
 
-    .sticky-header { position: sticky; top: 0; z-index: 1000; background: rgba(14, 12, 10, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-top: var(--safe-top); }
-    header { padding: 10px 15px; display: flex; align-items: center; justify-content: center; height: 50px; }
-    .logo { font-size: 16px; font-weight: 800; letter-spacing: 4px; color: var(--accent); }
-    
-    .view-tabs { display: flex; gap: 6px; padding: 0 10px 10px; }
-    .tab-btn { flex: 1; padding: 12px 0; text-align: center; background: var(--panel2); border: 1px solid var(--line); color: var(--muted); border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
-    .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-    .tab-btn.active.close-tab { background: var(--blue); color: #000; }
+    .view-tabs { display:flex; gap:6px; padding:0 10px 10px; }
+    .tab-btn {
+      flex:1; padding:8px 0; text-align:center; background:var(--panel2);
+      border:1px solid var(--line); color:#888; border-radius:6px;
+      font-weight:bold; cursor:pointer; font-size:11px;
+    }
+    .tab-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
 
-    main{ padding: 15px; max-width: 600px; margin: 0 auto; }
-    section { margin-bottom: 30px; }
-    h2 { font-size: 13px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; margin-bottom: 15px; text-transform: uppercase; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 15px; }
+    .scroll-nav-container { overflow-x:auto; padding:0 10px 10px; display:block; }
+    .nav-list { display:flex; gap:8px; }
+    .nav-tag {
+      white-space:nowrap; padding:6px 12px; background:var(--panel);
+      border:1px solid var(--line); border-radius:20px; font-size:11px;
+      color:var(--accent); text-decoration:none;
+    }
 
-    .cash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .cash-item { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px; border-radius: 8px; border: 1px solid #222; }
-    .cash-item span { font-size: 13px; color: var(--muted); }
-    .cash-item input { width: 70px; background: transparent; border: none; color: #fff; font-size: 18px; text-align: right; outline: none; }
-    
-    label { display:flex; align-items:center; margin:12px 0; font-size:14px; cursor: pointer; }
-    input[type="checkbox"] { transform:scale(1.4); margin-right: 12px; }
-    textarea { width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:var(--text); font-size:16px; outline: none; margin-top:10px;}
-    .send-btn { width:100%; padding:18px; border-radius:14px; border:none; font-size:16px; font-weight:800; background:var(--accent); color:#000; cursor:pointer; margin-top:20px; transition: opacity 0.2s; }
-    .send-btn:active { opacity: 0.7; }
-    .send-btn:disabled { background: var(--muted); cursor: not-allowed; }
+    main { padding:15px; max-width:800px; margin:0 auto; }
+    .search-box { margin-bottom:20px; }
+    .search-box input {
+      width:100%; padding:12px; background:var(--panel); border:1px solid var(--accent);
+      border-radius:8px; color:#fff; font-size:16px; outline:none;
+    }
 
-    .info-box { background: rgba(197,160,89,0.1); border: 1px dashed var(--accent); padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
-    .code-val { font-family: monospace; color: var(--accent); font-weight: bold; background: #000; padding: 2px 5px; border-radius: 4px; }
-    .hidden { display: none !important; }
-    
-    .welcome-anim { text-align: center; margin-bottom: 20px; color: var(--accent); font-size: 14px; }
-    .tuesday-alert { color: var(--todo); font-weight: bold; border: 1px dashed var(--todo); padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 10px; font-size: 13px; }
+    section { margin-bottom:40px; scroll-margin-top:160px; }
+    #food-view h2 {
+      font-size:18px!important; color:var(--text); border-left:5px solid var(--accent);
+      padding-left:15px; margin:30px 0 15px; text-transform:uppercase;
+    }
+    .dessert-header { border-left-color:#ff9f43!important; }
+
+    .recipe-item, .standard-link, .card-theory {
+      background:var(--panel); border:1px solid var(--line); border-radius:10px;
+      overflow:hidden; display:block; text-decoration:none; margin-bottom:10px;
+    }
+    .recipe-header { padding:15px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+    .recipe-info b { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:15px; color:#fff; }
+    .recipe-info span { font-size:11px; color:var(--muted); }
+    .recipe-content { max-height:0; overflow:hidden; transition:max-height .25s ease-out; background:rgba(255,255,255,.02); }
+    .item-open .recipe-content { max-height:1000px; border-top:1px solid var(--line); }
+    .recipe-detail { padding:15px; font-size:14px; color:#ddd; }
+
+    .app-note { background:var(--panel2); padding:12px; border-radius:8px; font-size:13px; border-left:3px solid var(--todo); margin-top:12px; }
+
+    .badge { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:700; color:#000; }
+    .badge.tag { background:var(--panel2); color:var(--muted); border:1px solid var(--line); font-weight:400; }
+    .badge.strong { background:#ef4444; color:#fff; }
+    .badge.normal { background:#ffcc00; color:#000; }
+    .badge.weak { background:#8fd19e; color:#000; }
+    .badge.none { background:#a29bfe; color:#000; }
+
+    .card-theory-full { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
+    .formula-box { background:var(--panel2); padding:15px; border-radius:8px; margin:10px 0; border:1px dashed var(--accent); }
+    .ratio { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; font-weight:700; color:var(--accent); font-size:14px; }
+    .theory-table { width:100%; border-collapse:collapse; margin-bottom:15px; }
+    .theory-table th, .theory-table td { padding:10px; border-bottom:1px solid var(--line); font-size:14px; text-align:left; }
+    .theory-table th { color:var(--muted); font-weight:500; width:45%; }
+    .theory-steps { padding-left:18px; margin:0; font-size:14px; color:var(--muted); }
+
+    .food-card { display:flex; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:8px; height:100px; }
+    .food-img { width:100px; height:100px; object-fit:cover; flex-shrink:0; background:#222; cursor:pointer; }
+    .food-body { padding:10px 12px; flex:1; display:flex; flex-direction:column; justify-content:center; }
+    .food-body b { color:var(--accent); font-size:14px; margin-bottom:4px; }
+    .todo-box { font-size:11px; color:var(--muted); line-height:1.4; }
+
+    #imageModal { display:none; position:fixed; z-index:2000; inset:0; background:rgba(0,0,0,.95); justify-content:center; align-items:center; }
+    #imageModal.show { display:flex; }
+    #modalImg { max-width:95%; max-height:90%; border-radius:8px; border:2px solid var(--accent); }
+
+    .arrow { color:var(--accent); font-size:10px; transition:transform .3s; }
+    .item-open .arrow { transform:rotate(180deg); }
+    .hidden { display:none!important; }
+
+    #auth-overlay { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; padding:20px; }
   </style>
 </head>
 <body>
 
-<div id="auth-overlay" style="position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; padding:20px;">
-  <div class="logo" style="font-size: 24px; margin-bottom: 20px;">SPEC-OPS</div>
-  <input type="text" id="staff-name-input" placeholder="スタッフ名" style="width:280px; padding:15px; background:var(--panel); border:1px solid var(--line); border-radius:10px; color:#fff; text-align:center; margin-bottom:15px; outline:none;">
-  <input type="password" id="pass-input" placeholder="Password" style="width:280px; padding:15px; background:var(--panel); border:1px solid var(--accent); border-radius:10px; color:#fff; text-align:center; margin-bottom:15px; outline:none;">
-  <button onclick="checkAuth()" style="width:280px; padding:15px; background:var(--accent); border:none; border-radius:10px; font-weight:bold; cursor:pointer; color:#000;">ENTER SYSTEM</button>
+<div id="auth-overlay">
+  <div class="logo" style="font-size:24px; margin-bottom:20px;">SPECPEDIA</div>
+  <input type="password" id="pass-input" placeholder="Password"
+    style="width:80%; max-width:300px; padding:15px; background:var(--panel);
+    border:1px solid var(--accent); border-radius:8px; color:#fff; text-align:center; font-size:18px;">
+  <button onclick="checkAuth()"
+    style="width:80%; max-width:300px; padding:12px; background:var(--accent);
+    color:#000; border:none; border-radius:8px; font-weight:bold; margin-top:15px;">
+    ENTER
+  </button>
 </div>
 
-<div class="sticky-header">
-  <header><div class="logo">SPEC-OPS</div></header>
+<div class="sticky-header-zone">
+  <header><div class="logo">SPECPEDIA</div></header>
+
+  <!-- タブ順：Cocktail / Food / Theory -->
   <div class="view-tabs">
-    <div id="tabReport" class="tab-btn active" onclick="switchView('report')">Report</div>
-    <div id="tabManual" class="tab-btn" onclick="switchView('manual')">Manual</div>
+    <div class="tab-btn active" data-view="cocktail" onclick="switchView('cocktail')">Cocktail</div>
+    <div class="tab-btn" data-view="food" onclick="switchView('food')">Food</div>
+    <div class="tab-btn" data-view="theory" onclick="switchView('theory')">Theory</div>
+  </div>
+
+  <div id="cocktail-nav" class="scroll-nav-container">
+    <div class="nav-list">
+      <a href="#standard" class="nav-tag" style="color:var(--standard); border-color:var(--standard);">STANDARD</a>
+      <a href="#gin" class="nav-tag">Gin</a>
+      <a href="#vodka" class="nav-tag">Vodka</a>
+      <a href="#rum" class="nav-tag">Rum</a>
+      <a href="#tequila" class="nav-tag">Tequila</a>
+      <a href="#whisky" class="nav-tag">Whisky</a>
+      <a href="#brandy" class="nav-tag">Brandy</a>
+      <a href="#liqueur" class="nav-tag">Liqueur</a>
+      <a href="#wine" class="nav-tag">Wine</a>
+      <a href="#beer" class="nav-tag">Beer</a>
+      <a href="#mocktail" class="nav-tag" style="color:#8fd19e; border-color:#8fd19e;">Mocktail</a>
+    </div>
   </div>
 </div>
 
 <main>
-  <div id="welcome-message" style="display:none;"></div>
+  <div class="search-box"><input type="text" id="recipeSearch" placeholder="検索..." onkeyup="filterAll()"></div>
 
-  <div id="report-view">
-    <div class="card"><div style="display:flex; gap:8px;"><button id="btnOpenMode" onclick="setMode('開店')" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--accent); color:#000; font-weight:bold; cursor:pointer;">開店</button><button id="btnCloseMode" onclick="setMode('閉店')" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--panel2); color:#fff; font-weight:bold; cursor:pointer;">閉店</button></div></div>
-    
-
-<div class="check-section">
-  <h2>開店チェック</h2>
-  
-  <label style="color:var(--ng); font-weight:bold;">
-    <input type="checkbox" value="2F トイレ・床・鏡"> 2F トイレ・床・鏡
-  </label>
-  
-  <label><input type="checkbox" value="2F テーブル・椅子"> 2F テーブル・椅子</label>
-  <label><input type="checkbox" value="2F 備品・menuチェック"> 2F 備品・menuチェック</label>
-  
-  <hr style="border:0; border-top:1px solid #eee; margin:10px 0;"> <label><input type="checkbox" value="1F トイレ・床・鏡"> 1F トイレ・床・鏡</label>
-  <label><input type="checkbox" value="1F カウンター・床"> 1F カウンター・床</label>
-  <label><input type="checkbox" value="1F キッチン・バックバー"> 1F キッチン・バックバー</label>
-  <label><input type="checkbox" value="階段・エントランス"> 階段・エントランス</label>
-  
-  <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-  
-  <label><input type="checkbox" value="HACCP入力完了"> HACCP入力完了</label>
-
-  <label style="border:2px solid var(--ng); padding:8px; border-radius:8px; margin-top:10px;">
-    <input type="checkbox" value="レジ・在庫確認"> レジ・在庫確認（準備完了）
-  </label>
-</div>
-
-      <fieldset class="check-group">
-        <legend>共通・管理</legend>
-        <ul>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="stairs_entrance">
-              階段・エントランス
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="haccp_done">
-              HACCP入力完了
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" name="checks" value="register_stock">
-              レジ・在庫確認
-            </label>
-          </li>
-        </ul>
-      </fieldset>
-    </form>
-    
-    <div id="closeSection" class="card hidden">
-      <h2>閉店チェック</h2>
-      <label style="color:var(--ng); font-weight:bold;"><input type="checkbox" value="2F エアコンOFF"> 3階・2階 エアコンOFF</label>
-      <label><input type="checkbox" value="1F エアコンOFF"> 1階 エアコンOFF</label>
-      <label><input type="checkbox" value="看板の収納"> 看板を中に戻した</label>
-      <label><input type="checkbox" value="マットの収納"> 外マットを中に戻した</label>
-      <label><input type="checkbox" value="カーテンを下ろす"> ロールスクリーンを下ろした</label>
-      <label><input type="checkbox" value="戸棚の戸締まり"> 戸棚をきっちり閉めた</label>
-      <label><input type="checkbox" value="ウォーマーOFF"> おしぼりウォーマーOFF</label>
-      <label><input type="checkbox" value="照明・食洗機電源"> 照明消灯・食洗機等確認</label>
-      <label><input type="checkbox" value="ゴミ箱（満杯前処理）"> ゴミ回収・廃棄確認</label>
-      <label><input type="checkbox" value="レジ締完了"> レジ締め処理の完了</label>
-      <label style="border:2px solid var(--ng); padding:8px; border-radius:8px;"><input type="checkbox" value="入口ドア施錠（指差し）"> 1F 入口施錠（指差し）</label>
-    </div>
-
-    <div class="card">
-      <h2>金種チェック（準備金：3万円）</h2>
-      <div class="cash-grid">
-        <div class="cash-item"><span>10,000円</span><input type="number" id="n10000" oninput="calc()"></div>
-        <div class="cash-item"><span>5,000円</span><input type="number" id="n5000" oninput="calc()"></div>
-        <div class="cash-item"><span>1,000円</span><input type="number" id="n1000" oninput="calc()"></div>
-        <div class="cash-item"><span>500円</span><input type="number" id="n500" oninput="calc()"></div>
-        <div class="cash-item"><span>100円</span><input type="number" id="n100" oninput="calc()"></div>
-        <div class="cash-item"><span>50円</span><input type="number" id="n50" oninput="calc()"></div>
-        <div class="cash-item"><span>10円</span><input type="number" id="n10" oninput="calc()"></div>
-        <div class="cash-item"><span>5円</span><input type="number" id="n5" oninput="calc()"></div>
-        <div class="cash-item"><span>1円</span><input type="number" id="n1" oninput="calc()"></div>
+  <div id="cocktail-view">
+    <section id="standard">
+      <h2 style="color:var(--standard); border-left-color:var(--standard);">SPEC-Standard</h2>
+      <div class="recipe-grid">
+        <a href="old-fashioned.html" class="standard-link">
+          <div class="recipe-header">
+            <div class="recipe-info">
+              <b>オールドファッションド <span class="badge tag">ショート</span> <span class="badge strong">強い</span></b>
+              <span>Old Fashioned</span>
+            </div>
+            <div class="arrow">VIEW DETAIL →</div>
+          </div>
+        </a>
+        <a href="coffee-martini.html" class="standard-link">
+          <div class="recipe-header">
+            <div class="recipe-info">
+              <b>エスプレッソマティーニ <span class="badge tag">ショート</span> <span class="badge strong">強い</span></b>
+              <span>Coffee Martini</span>
+            </div>
+            <div class="arrow">VIEW DETAIL →</div>
+          </div>
+        </a>
       </div>
-      <p id="cashResult" style="text-align:center; margin-top:15px; font-size:18px; font-weight:bold; color:var(--ng);">合計：0 円（不一致）</p>
-    </div>
-    <div class="card">
-      <textarea id="comment" rows="3" placeholder="連絡事項・割れ物等"></textarea>
-      <button id="sendBtn" class="send-btn" onclick="sendMail()">報告を送信</button>
+    </section>
+    <div id="recipe-container"></div>
+  </div>
+
+  <div id="food-view" class="hidden">
+    <div id="food-container">
+      <section><h2>🧀 おつまみ (Appetizer)</h2><div id="food-appetizer"></div></section>
+      <section><h2>🍝 お食事 (Meal)</h2><div id="food-meal"></div></section>
+      <section><h2 class="dessert-header">🍫 デザート (Dessert)</h2><div id="food-dessert"></div></section>
     </div>
   </div>
 
-  <div id="manual-view" class="hidden">
-    <section>
-      <h2>業務フロー & 料金体系</h2>
-      <div class="card">
-        <div class="info-box"><b>Happy Hour (18-19):</b> No Charge<br><b>Bar Time (19-):</b> Charge ¥1,000</div>
-        <ul style="padding-left:15px; font-size:13px; color:var(--muted);">
-          <li style="color:var(--todo); font-weight:bold;">火曜日：おしぼりを出す</li>
-          <li>挨拶：ハリのある声で</li>
-          <li>見送り：入口まで。最高に良い印象を</li>
-        </ul>
-      </div>
-      <h2>発注 & 連絡先</h2>
-      <div class="card">
-        <div class="info-box"><b>カクヤス (当日21時迄):</b> <span class="code-val">0570-200-919</span><br><b>店舗コード:</b> <span class="code-val">679383</span></div>
-        <div class="info-box"><b>氷（中央冷凍）: LINE発注</b><br>キング2 / ダイヤ1 / 丸(60)3 / 丸(70)2<br>
-          <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); color:var(--accent); font-weight:bold; font-size:12px;">
-            💡 2階の冷凍在庫を上記になる様に持って降りたら発注
-          </div>
+  <div id="theory-view" class="hidden">
+    <section id="theory-basics">
+      <h2>基礎理論：カクテルの方程式</h2>
+      <div class="card-theory-full">
+        <div class="formula-box">
+          <strong>1. ショート・サワー型（方程式 3：1：1）</strong>
+          <div class="ratio">ベース 30〜45ml <span>+</span> ホワイトキュラソー 15ml <span>+</span> レモン 15ml</div>
         </div>
-        <div class="info-box" style="border-color:var(--ng);"><b>🚨 緊急連絡先:</b> <span class="code-val">090-1882-1236</span></div>
       </div>
     </section>
   </div>
 </main>
 
+<div id="imageModal" onclick="this.classList.remove('show')"><img id="modalImg" src=""></div>
+
 <script>
-// --- 設定 ---
 const STAFF_PASS = "spec1234";
-let currentMode = '開店';
 
-// --- 認証機能 ---
 function checkAuth() {
-  const p = document.getElementById('pass-input').value;
-  const n = document.getElementById('staff-name-input').value;
-  if (p === STAFF_PASS) {
-    localStorage.setItem('spec_auth_granted', 'true');
-    localStorage.setItem('spec_staff_name', n);
+  if (document.getElementById('pass-input').value === STAFF_PASS) {
+    localStorage.setItem('spec_auth', 'true');
     document.getElementById('auth-overlay').style.display = 'none';
-    displayWelcome(n);
-  } else { alert('認証失敗：パスワードが違います'); }
-}
-
-// --- ウェルカムメッセージ表示 ---
-function displayWelcome(name) {
-  const msgEl = document.getElementById('welcome-message'); 
-  if (!name) return;
-  const now = new Date(); const days = ['日','月','火','水','木','金','土'];
-  const messages = ["今日も頑張っていきましょう！","ガッツリ儲けていきましょう！💰","最高の一杯をお客さまに！🍸","SPEC-OPS 起動。","今日もおもてなし！","笑顔で最高な一日に！"];
-  
-  let html = `<div class="welcome-anim"><small>${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]})</small><br><strong>お疲れ様です、${name}さん。</strong><br>${messages[Math.floor(Math.random()*messages.length)]}</div>`;
-  
-  if (now.getDay() === 2) {
-    html += `<div class="welcome-anim tuesday-alert">⚠️ 本日は火曜日です：おしぼり準備！忘れずに</div>`;
   }
-  
-  msgEl.innerHTML = html; 
-  msgEl.style.display = 'block';
 }
 
-// --- 画面切り替え ---
+window.onload = () => {
+  if (localStorage.getItem('spec_auth') === 'true') {
+    document.getElementById('auth-overlay').style.display = 'none';
+  }
+  loadRecipes();
+  renderFood();
+};
+
 function switchView(view) {
-  document.getElementById('manual-view').classList.toggle('hidden', view !== 'manual');
-  document.getElementById('report-view').classList.toggle('hidden', view !== 'report');
-  document.getElementById('tabManual').classList.toggle('active', view === 'manual');
-  document.getElementById('tabReport').classList.toggle('active', view === 'report');
-  
-  const tabReport = document.getElementById('tabReport');
-  if(view === 'report' && currentMode === '閉店') { 
-    tabReport.classList.add('close-tab'); 
-  } else { 
-    tabReport.classList.remove('close-tab'); 
-  }
+  ['cocktail','food','theory'].forEach(v => {
+    document.getElementById(v + '-view').classList.toggle('hidden', v !== view);
+  });
+  document.getElementById('cocktail-nav').style.display = (view === 'cocktail') ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.view === view)
+  );
   window.scrollTo(0,0);
 }
 
-// --- 開店/閉店モード切替 ---
-function setMode(m) {
-  currentMode = m; 
-  const isOpen = (m === '開店');
-  document.getElementById('openSection').classList.toggle('hidden', !isOpen);
-  document.getElementById('closeSection').classList.toggle('hidden', isOpen);
-  
-  const btnOpen = document.getElementById('btnOpenMode');
-  const btnClose = document.getElementById('btnCloseMode');
-  const tabReport = document.getElementById('tabReport');
-  
-  btnOpen.style.background = isOpen ? 'var(--accent)' : 'var(--panel2)';
-  btnOpen.style.color = isOpen ? '#000' : '#888';
-  btnClose.style.background = isOpen ? 'var(--panel2)' : 'var(--blue)';
-  btnClose.style.color = isOpen ? '#fff' : '#000';
-  
-  document.body.style.background = isOpen ? 'var(--bg)' : '#0b1020';
-  tabReport.classList.toggle('close-tab', !isOpen);
-}
-
-// --- 金種計算機能 ---
-function calc() {
-  const denoms = [10000, 5000, 1000, 500, 100, 50, 10, 5, 1]; 
-  let total = 0;
-  denoms.forEach(v => { total += (Number(document.getElementById('n' + v).value) || 0) * v; });
-  
-  const isOk = (total === 30000); 
-  const res = document.getElementById('cashResult');
-  res.textContent = `合計：${total.toLocaleString()} 円 ${isOk ? '（基準一致）' : '（不一致）'}`;
-  res.style.color = isOk ? 'var(--ok)' : 'var(--ng)';
-}
-
-// --- 送信機能 ---
-async function sendMail(){
-  if (!window.confirm(`${currentMode}報告を送信しますか？`)) {
-    return;
-  }
-
-  const name = localStorage.getItem('spec_staff_name');
-  const sectionId = (currentMode === '開店') ? 'openSection' : 'closeSection';
-  const checkboxes = document.querySelectorAll(`#${sectionId} input[type="checkbox"]`);
-  const checks = Array.from(checkboxes).map(c => (c.checked ? '✅ [済] ' : '❌ [未] ') + c.value).join('\n');
-  const cashText = document.getElementById('cashResult').textContent;
-  const comment = document.getElementById('comment').value;
-
-  const denoms = [10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
-  const d = denoms.map(v => `${v}円:${document.getElementById('n'+v).value || 0}枚`);
-  const denominations = `${d[0]}, ${d[1]}, ${d[2]}\n${d[3]}, ${d[4]}, ${d[5]}\n${d[6]}, ${d[7]}, ${d[8]}`;
-
-  const btn = document.getElementById('sendBtn'); 
-  btn.disabled = true; 
-  btn.textContent = '送信中...';
-
-  try {
-    const res = await fetch('/api/report', { 
-      method: 'POST', 
-      headers: {'Content-Type': 'application/json'}, 
-      body: JSON.stringify({ mode: currentMode, name, checks, cashText, comment, denominations }) 
+function loadRecipes() {
+  fetch('cocktails.json?v=' + new Date().getTime())
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('recipe-container');
+      container.innerHTML = "";
+      const grouped = data.reduce((acc, item) => {
+        if (!acc[item.base]) acc[item.base] = [];
+        acc[item.base].push(item);
+        return acc;
+      }, {});
+      Object.keys(grouped).forEach(base => {
+        const sec = document.createElement('section');
+        sec.id = base;
+        sec.innerHTML = `<h2>${base.toUpperCase()}</h2><div class="recipe-grid"></div>`;
+        const grid = sec.querySelector('.recipe-grid');
+        grouped[base].forEach(item => {
+          let sClass = "normal";
+          if (item.strength === "強い") sClass = "strong";
+          if (item.strength === "弱い") sClass = "weak";
+          if (item.strength === "ノンアル") sClass = "none";
+          let mColor = "";
+          if (item.method.includes("ビルド")) mColor = "var(--build)";
+          if (item.method.includes("シェイク")) mColor = "var(--shake)";
+          if (item.method.includes("ステア")) mColor = "var(--stir)";
+          const div = document.createElement('div');
+          div.className = 'recipe-item';
+          div.innerHTML = `
+            <div class="recipe-header" onclick="this.parentElement.classList.toggle('item-open')">
+              <div class="recipe-info">
+                <b>${item.name} <span class="badge tag">${item.style}</span> <span class="badge ${sClass}">${item.strength}</span></b>
+                <span>${item.en} <small style="color:${mColor}">/ ${item.method}</small></span>
+              </div>
+              <div class="arrow">▼</div>
+            </div>
+            <div class="recipe-content">
+              <div class="recipe-detail">
+                <div style="color:var(--accent); font-size:10px; margin-bottom:8px;">RECIPE</div>
+                <div style="font-size:15px; margin-bottom:15px; border-left:1px solid var(--accent); padding-left:10px;">${item.recipe}</div>
+                <div class="app-note">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; font-size:12px; color:var(--muted);">
+                    <div>Glass: ${item.glass}</div>
+                    <div>Ice: ${item.ice}</div>
+                  </div>
+                  <div style="margin-top:10px;">${item.notes}</div>
+                </div>
+              </div>
+            </div>`;
+          grid.appendChild(div);
+        });
+        container.appendChild(sec);
+      });
     });
-
-    if (res.ok) {
-      const msg = currentMode === '開店' ? '報告を送信しました。\n今日もよろしく！' : '報告を送信しました。\nお疲れ様でした。';
-      alert(msg);
-      location.reload(); 
-    } else {
-      const err = await res.json();
-      alert('エラー: ' + (err.error || '不明なエラー'));
-    }
-
-  } catch(e) { 
-    console.error(e);
-    alert('通信に失敗しました。ネットワークを確認してください。'); 
-  } finally { 
-    btn.disabled = false; 
-    btn.textContent = '報告を送信'; 
-  }
 }
 
-// --- 初期化 ---
-window.onload = () => {
-  const isAuth = localStorage.getItem('spec_auth_granted');
-  const savedName = localStorage.getItem('spec_staff_name');
-  if (isAuth === 'true') { 
-    document.getElementById('auth-overlay').style.display = 'none'; 
-    displayWelcome(savedName); 
-  }
-  if (savedName) { 
-    document.getElementById('staff-name-input').value = savedName; 
-  }
-};
+function renderFood() {
+  const foods = [
+    {cat:"appetizer", n:"Assorted Cheese", i:"assorted-cheese.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Meiji Cheese", i:"meiji-cheese.jpeg", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Tuna Jerky", i:"tuna-jerky.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Yamagata Pork Jerky", i:"yamagata-pork-jerky.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Yamagata Pork Salami", i:"yamagata-pork-salami.png", prep:"個食盛り付け"},
+    {cat:"appetizer", n:"Fresh Peppercorns", i:"fresh-peppercorns.png", prep:"個食盛り付け"},
+    {cat:"meal", n:"Today's Pasta", i:"pasta.jpeg", prep:"ボイル調理"},
+    {cat:"meal", n:"Penne", i:"penne.jpeg", prep:"ボイル調理"},
+    {cat:"meal", n:"Daily Special Pizza", i:"daily-special-pizza.png", prep:"オーブン加熱"},
+    {cat:"meal", n:"Cheese Sandwich", i:"cheese-sandwich.png", prep:"トースト提供"},
+    {cat:"dessert", n:"Truffle Crispy Cheese Pie", i:"crispy-cheese-pie.png", prep:"個食パック"},
+    {cat:"dessert", n:"Chocolate Snacks", i:"chocolate-snacks.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Assorted Chocolates", i:"assorted-chocolates.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Raisin Butter", i:"raisin-butter.png", prep:"個食盛り付け"},
+    {cat:"dessert", n:"Yokan", i:"yokan.png", prep:"カット提供"}
+  ];
+  const containers = {
+    appetizer: document.getElementById('food-appetizer'),
+    meal: document.getElementById('food-meal'),
+    dessert: document.getElementById('food-dessert')
+  };
+  Object.values(containers).forEach(c => c.innerHTML = "");
+  foods.forEach(f => {
+    const isMeal = f.cat === "meal";
+    const card = `<div class="food-card">
+      <img src="images/${f.i}" class="food-img">
+      <div class="food-body">
+        <b>${f.n}</b>
+        <div class="todo-box"><span style="color:${isMeal?'var(--standard)':'var(--todo)'}; font-weight:bold;">●</span> ${f.prep}</div>
+      </div>
+    </div>`;
+    if (containers[f.cat]) containers[f.cat].innerHTML += card;
+  });
+}
 
-if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+function filterAll() {
+  const q = document.getElementById('recipeSearch').value.toLowerCase();
+  document.querySelectorAll('.recipe-item, .standard-link, .food-card')
+    .forEach(el => el.classList.toggle('hidden', !el.innerText.toLowerCase().includes(q)));
+}
+
+let lastTap = 0;
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('food-img')) {
+    const now = Date.now();
+    if (now - lastTap < 300 && now - lastTap > 0) {
+      document.getElementById('modalImg').src = e.target.src;
+      document.getElementById('imageModal').classList.add('show');
+      e.preventDefault();
+    }
+    lastTap = now;
+  }
+});
 </script>
 </body>
 </html>
