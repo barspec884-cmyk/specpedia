@@ -346,15 +346,31 @@ function renderFood() {
     dessert: document.getElementById('food-dessert')
   };
   Object.values(containers).forEach(c => c.innerHTML = "");
-  foods.forEach(f => {
+foods.forEach(f => {
     const isMeal = f.cat === "meal";
+    
+    // ピザの場合のみガイドへのリンクを生成
+    let guideHtml = "";
+    if (f.n === "Daily Special Pizza") {
+      guideHtml = `
+        <div style="margin-top:5px;">
+          <a href="/pdf/daily-special-pizza-grill-guide.pdf" target="_blank" 
+             style="color:var(--accent); font-size:10px; text-decoration:underline;">
+             オペレーションガイド（PDF）
+          </a>
+        </div>`;
+    }
+
     const card = `<div class="food-card">
       <img src="images/${f.i}" class="food-img">
       <div class="food-body">
         <b>${f.n}</b>
-        <div class="todo-box"><span style="color:${isMeal?'var(--standard)':'var(--todo)'}; font-weight:bold;">●</span> ${f.prep}</div>
-      </div>
+        <div class="todo-box">
+          <span style="color:${isMeal?'var(--standard)':'var(--todo)'}; font-weight:bold;">●</span> ${f.prep}
+        </div>
+        ${guideHtml}  </div>
     </div>`;
+    
     if (containers[f.cat]) containers[f.cat].innerHTML += card;
   });
 }
