@@ -78,7 +78,7 @@
     .recipe-info b { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:15px; color:#fff; }
     .recipe-info span { font-size:11px; color:var(--muted); }
     .recipe-content { max-height:0; overflow:hidden; transition:max-height .25s ease-out; background:rgba(255,255,255,.02); }
-    .item-open .recipe-content { max-height:1000px; border-top:1px solid var(--line); }
+    .item-open .recipe-content { max-height:2000px; border-top:1px solid var(--line); }
     .recipe-detail { padding:15px; font-size:14px; color:#ddd; }
 
     .app-note { background:var(--panel2); padding:12px; border-radius:8px; font-size:13px; border-left:3px solid var(--todo); margin-top:12px; }
@@ -175,6 +175,15 @@
             <div class="recipe-info">
               <b>エスプレッソマティーニ <span class="badge tag">ショート</span> <span class="badge strong">強い</span></b>
               <span>Coffee Martini</span>
+            </div>
+            <div class="arrow">VIEW DETAIL →</div>
+          </div>
+        </a>
+        <a href="samurai-blue.html" class="standard-link">
+          <div class="recipe-header">
+            <div class="recipe-info">
+              <b>侍ブルー <span class="badge tag">ロック</span> <span class="badge strong">強い</span></b>
+              <span>Samurai Blue</span>
             </div>
             <div class="arrow">VIEW DETAIL →</div>
           </div>
@@ -304,6 +313,7 @@ function loadRecipes() {
             </div>
             <div class="recipe-content">
               <div class="recipe-detail">
+                ${item.img ? `<img src="images/${item.img}" alt="${item.name}" loading="lazy" style="width:100%; border-radius:8px; margin-bottom:15px; display:block;">` : ``}
                 <div style="color:var(--accent); font-size:10px; margin-bottom:8px;">RECIPE</div>
                 <div style="font-size:15px; margin-bottom:15px; border-left:1px solid var(--accent); padding-left:10px;">${item.recipe}</div>
                 <div class="app-note">
