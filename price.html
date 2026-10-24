@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>価格即答｜SPECPEDIA</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c5a059">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SPECPEDIA">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <style>
+    /* specpedia と同じ色 */
+    :root{
+      --bg:#0e0c0a; --panel:#1c1915; --panel2:#25211e; --line:rgba(197,160,89,0.2);
+      --fg:#f4f4f4; --muted:#a89984; --dim:#6b6156;
+      --accent:#c5a059; --red:#ef4444;
+      color-scheme:dark;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{background:var(--bg);color:var(--fg)}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Hiragino Sans",sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+    [hidden]{display:none!important}
+    .top{position:sticky;top:0;z-index:5;background:rgba(14,12,10,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+    .wrap{max-width:720px;margin:0 auto;padding-left:max(15px,env(safe-area-inset-left,0px));padding-right:max(15px,env(safe-area-inset-right,0px))}
+    .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:50px}
+    .logo{font-size:16px;font-weight:800;letter-spacing:2px;color:var(--accent)}
+    .back{color:var(--muted);text-decoration:none;font-size:13px;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+    .search{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--accent);border-radius:8px;padding:0 4px 0 12px}
+    #q{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:600 19px/1 inherit;font-family:inherit;padding:13px 0}
+    #q::placeholder{color:var(--dim);font-weight:400}
+    #q::-webkit-search-cancel-button{display:none}
+    #clear{background:none;border:0;color:var(--muted);font:inherit;font-size:13px;padding:10px;cursor:pointer}
+    .tries{display:flex;gap:6px;overflow-x:auto;padding-block:10px 12px;font-size:11px;color:var(--muted);align-items:center;white-space:nowrap}
+    .chip{background:var(--panel);border:1px solid var(--line);color:var(--accent);border-radius:20px;padding:5px 11px;font:inherit;font-size:11px;cursor:pointer;flex-shrink:0}
+    main{padding-block:4px 60px}
+    .hit{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:end}
+    .hit .meta{grid-column:1/-1;font-size:11px;letter-spacing:.05em;color:var(--muted)}
+    .hit .names{min-width:0}
+    .hit h1{font-size:24px;line-height:1.3;margin:2px 0;overflow-wrap:anywhere}
+    .hit .en{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+    .price{text-align:right;white-space:nowrap}
+    .price strong{font-size:42px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:var(--accent);letter-spacing:-.01em}
+    .price strong i{font-style:normal;font-size:20px;color:var(--muted);margin-right:2px;font-weight:600}
+    .hit.out .price strong{color:var(--dim);text-decoration:line-through}
+    .soldout{grid-column:1/-1;justify-self:start;margin-top:10px;font-size:12px;font-weight:700;color:#fff;background:var(--red);border-radius:4px;padding:2px 8px}
+    .detail{grid-column:1/-1;margin-top:10px;font-size:14px;color:#ddd;border-left:1px solid var(--accent);padding-left:10px}
+    .qr{grid-column:1/-1;margin-top:12px;font-size:11px;color:var(--dim);overflow-wrap:anywhere}
+    h2{font-size:14px;color:var(--fg);border-left:4px solid var(--accent);padding-left:10px;margin:26px 0 6px}
+    .list{display:flex;flex-direction:column}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 4px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--fg);font:inherit;text-align:left;cursor:pointer;width:100%}
+    .row:active{background:var(--panel2)}
+    .row .n{min-width:0;overflow-wrap:anywhere}
+    .row .n small{display:block;color:var(--muted);font-size:11px}
+    .row .v{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+    .row.out .n,.row.out .v{color:var(--dim)}
+    .row.out .v::after{content:" 品切";font-size:11px;color:var(--red)}
+    .msg{margin-top:20px;color:var(--muted)}
+    #clear:focus-visible,.row:focus-visible,.chip:focus-visible,.back:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    #auth{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;align-items:center;justify-content:center;padding:20px}
+    #auth-form{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:300px}
+    #auth input{width:100%;padding:15px;background:var(--panel);border:1px solid var(--accent);border-radius:8px;color:#fff;text-align:center;font-size:18px}
+    #auth button{width:100%;padding:12px;background:var(--accent);color:#000;border:0;border-radius:8px;font-weight:700;font-size:15px}
+    #pass-msg{color:var(--red);font-size:13px;min-height:1em}
+    @media (max-width:420px){.hit{grid-template-columns:1fr}.price{text-align:left;margin-top:8px}.price strong{font-size:40px}.hit h1{font-size:22px}}
+  </style>
+</head>
+<body>
+
+<div id="auth">
+  <form id="auth-form">
+    <div class="logo" style="font-size:24px">SPECPEDIA</div>
+    <input type="password" id="pass" placeholder="Password" autocomplete="current-password">
+    <button type="submit">ENTER</button>
+    <div id="pass-msg"></div>
+  </form>
+</div>
+
+<div class="top">
+  <div class="wrap">
+    <div class="bar"><div class="logo">価格即答</div><a class="back" href="/">← SPECPEDIA</a></div>
+    <div class="search">
+      <input id="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="銘柄名（ひらがな・ローマ字・一部だけOK）" aria-label="銘柄を検索">
+      <button id="clear" type="button" aria-label="入力を消す">消す</button>
+    </div>
+    <div class="tries"><span id="count">試す:</span>
+      <button class="chip" type="button" data-q="ざき">ざき</button>
+      <button class="chip" type="button" data-q="hakusyu 12">hakusyu 12</button>
+      <button class="chip" type="button" data-q="ひびき21ねん">ひびき21ねん</button>
+      <button class="chip" type="button" data-q="あっけし とうじ">あっけし とうじ</button>
+      <button class="chip" type="button" data-q="あーどべっく">あーどべっく</button>
+      <button class="chip" type="button" data-q="ジョニーウォーカ黒">ジョニーウォーカ黒</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="out"><p class="msg">メニューを読み込んでいます…</p></main>
+
+<script>
+// ===== 言い間違い・あだ名の追加はここ（名前にこの文字が入っていたら、右の読み方でも見つかる） =====
+const EXTRA = {
+  "山崎":["やまざき","やまさき","ざき"], "白州":["はくしゅう","はくしゅ","しろす"], "響":["ひびき","きょう"],
+  "余市":["よいち"], "宮城峡":["みやぎきょう","みやぎ"], "竹鶴":["たけつる"], "鶴":["つる"],
+  "厚岸":["あっけし","あつけし"], "碧":["あお","へき"], "知多":["ちた"], "秩父":["ちちぶ"],
+  "駒ヶ岳":["こまがたけ"], "嘉之助":["かのすけ"], "三郎丸":["さぶろうまる"], "津貫":["つぬき"],
+  "安積":["あさか"], "山桜":["やまざくら"], "金澤":["かなざわ"], "長濱":["ながはま"], "静岡":["しずおか"],
+  "夏至":["げし"], "冬至":["とうじ"], "春分":["しゅんぶん"], "秋分":["しゅうぶん"], "立春":["りっしゅん"], "立夏":["りっか"], "小暑":["しょうしょ"],
+  "ブラックラベル":["くろ","黒","ジョニ黒"], "レッドラベル":["あか","赤","ジョニ赤"],
+  "飲み比べ":["のみくらべ","フライト","flight","セット"]
+};
+// ======================================================================================
+
+const CAT = {whisky:"ウイスキー",cocktail:"カクテル",gin:"ジン",spirits_other:"その他スピリッツ",beer:"ビール",wine:"ワイン",brandy:"ブランデー",nonal:"ノンアル",flight:"飲み比べ",rum:"ラム",vodka:"ウォッカ",tequila:"テキーラ"};
+
+// ---- 揺らぎ吸収 ----
+const kataToHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+const KN = {"〇":0,"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9};
+function kanjiNum(s){ // 十二→12 / 二十一→21
+  return s.replace(/[一二三四五六七八九]?十[一二三四五六七八九]?(?=年|y|$|\s)/g, m => {
+    const [a,b] = m.split("十"); return String((a?KN[a]:1)*10 + (b?KN[b]:0));
+  });
+}
+function prep(s){ // 全角半角・大小文字・カタカナ/ひらがな・年数表記をそろえる
+  s = String(s||"").normalize("NFKC").toLowerCase();
+  s = kanjiNum(s);
+  s = s.replace(/(\d+(?:\.\d+)?)\s*(years?|yrs?|y|ねん|年)(?![a-z])/g, "$1 ");
+  s = s.replace(/ケ|が(?=岳)/g, "ヶ");
+  return kataToHira(s);
+}
+const strip = s => s.replace(/[\s・\-ー~〜'’".,、。()（）「」『』【】\[\]×&!?！？/:：°%#]/g, "");
+const R = {あ:"a",い:"i",う:"u",え:"e",お:"o",か:"ka",き:"ki",く:"ku",け:"ke",こ:"ko",さ:"sa",し:"si",す:"su",せ:"se",そ:"so",た:"ta",ち:"ti",つ:"tu",て:"te",と:"to",な:"na",に:"ni",ぬ:"nu",ね:"ne",の:"no",は:"ha",ひ:"hi",ふ:"hu",へ:"he",ほ:"ho",ま:"ma",み:"mi",む:"mu",め:"me",も:"mo",や:"ya",ゆ:"yu",よ:"yo",ら:"ra",り:"ri",る:"ru",れ:"re",ろ:"ro",わ:"wa",を:"o",ん:"n",が:"ga",ぎ:"gi",ぐ:"gu",げ:"ge",ご:"go",ざ:"za",じ:"zi",ず:"zu",ぜ:"ze",ぞ:"zo",だ:"da",ぢ:"zi",づ:"zu",で:"de",ど:"do",ば:"ba",び:"bi",ぶ:"bu",べ:"be",ぼ:"bo",ぱ:"pa",ぴ:"pi",ぷ:"pu",ぺ:"pe",ぽ:"po",ぁ:"a",ぃ:"i",ぅ:"u",ぇ:"e",ぉ:"o",ゔ:"bu",ゐ:"i",ゑ:"e"};
+function toRoma(s){
+  let o = "";
+  for (let i=0;i<s.length;i++){
+    const c=s[i], n=s[i+1];
+    if (c==="っ") continue;
+    if (n && "ゃゅょ".includes(n) && R[c]) { o += R[c].slice(0,-1)+"y"+{ゃ:"a",ゅ:"u",ょ:"o"}[n]; i++; continue; }
+    if (n && "ぁぃぅぇぉ".includes(n) && R[c] && R[c].length>1) { o += R[c].slice(0,-1)+R[n]; i++; continue; } // ふぃ→hi, でぃ→di
+    o += R[c] ?? c;
+  }
+  return o;
+}
+function romaNorm(s){ // ヘボン式/訓令式/長音/濁点の聞き違いをそろえる
+  return s.replace(/shi/g,"si").replace(/chi/g,"ti").replace(/tsu/g,"tu").replace(/fu/g,"hu").replace(/ji/g,"zi")
+    .replace(/sh/g,"sy").replace(/ch/g,"ty").replace(/j/g,"zy").replace(/l/g,"r").replace(/v/g,"b").replace(/ph/g,"h").replace(/f/g,"h").replace(/c(?=[aou]|$)/g,"k").replace(/q/g,"k").replace(/x/g,"ks")
+    .replace(/([aiueo])h(?![aiueoy])/g,"$1").replace(/ou|oo/g,"o").replace(/uu/g,"u").replace(/ei|ee/g,"e").replace(/ii/g,"i").replace(/aa/g,"a")
+    .replace(/([^aiueon\d])\1/g,"$1").replace(/m(?=[bp])/g,"n").replace(/[^a-z]/g,"");
+}
+const roma = s => romaNorm(/[a-z]/.test(s) ? s : toRoma(s));
+const soft = s => s.replace(/g/g,"k").replace(/z/g,"s").replace(/d/g,"t").replace(/b/g,"h").replace(/p/g,"h"); // 濁点のつけ忘れ・つけ過ぎ
+function lev(a,b){ if(Math.abs(a.length-b.length)>2) return 9; const d=[...Array(b.length+1).keys()];
+  for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t;}} return d[b.length]; }
+
+function mkKey(s){
+  const n = strip(s.replace(/\d+(\.\d+)?/g,""));
+  if (!n) return null;
+  const r = roma(n);
+  return {n, r, s: soft(r)};
+}
+
+// ---- データ準備 ----
+let DATA = [];
+function slug(s){ return String(s||"").normalize("NFKD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "item"; }
+function prepare(raw){
+  const used = {};
+  DATA = raw.map(x => {
+    const nj = String(x.nj||"").replace(/\s+/g," ").trim(), ne = String(x.ne||"").replace(/\s+/g," ").trim();
+    let id = slug(ne || nj); if (used[id]) id += "-" + (++used[id]); else used[id] = 1;
+    const words = [nj, ne];
+    for (const k in EXTRA) if (nj.includes(k)) words.push(...EXTRA[k]);
+    const parts = new Set();
+    for (const w of words) { const p = prep(w); parts.add(p); p.split(/[\s・()（）「」【】×/]+/).forEach(t => t && parts.add(t)); }
+    const keys = [...parts].map(mkKey).filter(Boolean);
+    const nums = new Set((prep(nj+" "+ne).match(/\d+(\.\d+)?/g)||[]).flatMap(v => v.includes(".") ? [v, ...v.split(".")] : [v]));
+    return {...x, nj, ne, id, keys, nums};
+  });
+}
+
+// ---- 検索 ----
+function scoreToken(t, d){
+  const n = strip(t); if (!n) return 0;
+  const r = roma(n), sr = soft(r);
+  let best = 0;
+  for (const k of d.keys){
+    let s = 0;
+    if (k.n===n) s=100; else if (k.n.startsWith(n)) s=92; else if (n.length>=2 && k.n.includes(n)) s=82;
+    else if (r.length>=2 && k.r===r) s=80; else if (r.length>=3 && k.r.startsWith(r)) s=74; else if (r.length>=4 && k.r.includes(r)) s=68;
+    else if (r.length>=3 && (k.s===sr || k.s.startsWith(sr))) s=66;
+    else if (r.length>=4) { const L = Math.min(lev(r, k.r.slice(0, r.length)), lev(sr, k.s.slice(0, sr.length)), lev(r,k.r)); if (L <= (r.length>=7?2:1)) s = 58 - L*4; }
+    if (s>best) best=s;
+    if (best===100) break;
+  }
+  return best;
+}
+function search(q){
+  const p = prep(q);
+  const nums = p.match(/\d+(\.\d+)?/g) || [];
+  const toks = p.replace(/\d+(\.\d+)?/g," ").split(/\s+/).map(strip).filter(Boolean);
+  const res = [];
+  for (const d of DATA){
+    let s;
+    if (toks.length){
+      const each = toks.map(t => scoreToken(t,d));
+      if (each.some(v=>!v)) {
+        // 区切らずに打った場合の救済（例: あっけしとうじ）
+        const whole = toks.length>1 ? scoreToken(toks.join(""), d) : 0;
+        if (!whole) continue; s = whole - 5;
+      } else s = Math.min(...each) + (each.length>1 ? 4 : 0);
+    } else if (nums.length) s = 50; else continue;
+    if (nums.length){ const hit = nums.every(v => d.nums.has(v)); s += hit ? 14 : -30; }
+    else if (d.nums.size) s -= 2; // 年数なしで聞かれたら定番を上に
+    if (d.so) s -= 6;
+    if (d.cat==="flight") s -= 8; // 飲み比べは「のみくらべ」と打ったときに上へ
+    if (s > 30) res.push({d, s});
+  }
+  const pv = d => typeof d.p==="number" && d.p>0 ? d.p : 1e9;
+  const wk = d => d.cat==="whisky" ? 0 : 1;
+  return res.sort((a,b) => b.s-a.s || wk(a.d)-wk(b.d) || pv(a.d)-pv(b.d)); // 同点ならウイスキー→定番（安い方）を上に
+}
+
+// ---- 表示 ----
+const out = document.getElementById("out"), qEl = document.getElementById("q");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const yen = v => typeof v==="number" ? (v>0 ? "¥"+v.toLocaleString("ja-JP") : "未定") : esc(String(v).startsWith("¥")?v:"¥"+v);
+function meta(d){
+  const bits = [CAT[d.cat]||d.cat];
+  if (d.cat!=="flight"){ const where = [d.dist, d.pref || (d.area||"").trim()].filter(Boolean); bits.push(...where); }
+  return bits.map(esc).join(" ｜ ");
+}
+function card(d){
+  const detail = d.cat==="flight" ? `${esc(d.dist)}<br>${esc(d.pref)}` : "";
+  const v = yen(d.p);
+  return `<section class="hit${d.so?" out":""}" aria-live="polite">
+    <div class="meta">${meta(d)}</div>
+    <div class="names"><h1>${esc(d.nj)}</h1><div class="en">${esc(d.ne)}</div></div>
+    <div class="price"><strong>${v.startsWith("¥")?`<i>¥</i>${v.slice(1)}`:v}</strong></div>
+    ${d.so?`<span class="soldout">品切れ中</span>`:""}
+    ${detail?`<p class="detail">${detail}</p>`:""}
+    <div class="qr">QR用ID: #${esc(d.id)}</div>
+  </section>`;
+}
+const row = d => `<button class="row${d.so?" out":""}" type="button" data-id="${esc(d.id)}"><span class="n">${esc(d.nj)}<small>${meta(d)}</small></span><span class="v">${yen(d.p)}</span></button>`;
+
+function render(q, pickId){
+  q = (q||"").trim();
+  if (!q && !pickId){
+    const groups = {};
+    DATA.forEach(d => (groups[d.cat] ??= []).push(d));
+    out.innerHTML = Object.entries(groups).map(([c,ds]) => `<h2>${esc(CAT[c]||c)}（${ds.length}）</h2><div class="list">${ds.map(row).join("")}</div>`).join("");
+    return;
+  }
+  let list = q ? search(q).map(x=>x.d) : [];
+  if (pickId){ const p = DATA.find(x=>x.id===pickId); if (p) list = [p, ...list.filter(x=>x!==p)]; }
+  if (!list.length){ out.innerHTML = `<p class="msg">「${esc(q)}」に当てはまる銘柄が見つかりません。名前の一部だけ（例: 「あっけし」）や英語名でも試してください。</p>`; return; }
+  const [top, ...rest] = list;
+  out.innerHTML = card(top) + (rest.length ? `<h2>ほかの候補（${rest.length}）</h2><div class="list">${rest.slice(0,12).map(row).join("")}</div>` : "");
+}
+
+let timer;
+qEl.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => render(qEl.value), 60); });
+document.getElementById("clear").onclick = () => { qEl.value=""; render(""); qEl.focus(); };
+document.querySelectorAll(".chip").forEach(b => b.onclick = () => { qEl.value = b.dataset.q; render(qEl.value); });
+out.addEventListener("click", e => { const r = e.target.closest(".row"); if (r){ render(qEl.value, r.dataset.id); window.scrollTo({top:0, behavior:"smooth"}); } });
+
+// QRから開いたとき（リンク末尾が #yamazaki-12-year-old など）はその1本を表示
+function fromHash(){ const id = decodeURIComponent(location.hash.slice(1)); if (id && DATA.some(d=>d.id===id)) { render("", id); return true; } return false; }
+
+// ---- パスワード（specpediaと共通。一度入れたら次からは不要） ----
+const STAFF_PASS = "spec1234";
+const authEl = document.getElementById("auth");
+function authed(){ try { return localStorage.getItem("spec_auth")==="true"; } catch(e){ return false; } }
+if (authed()) authEl.hidden = true; else document.getElementById("pass").focus();
+document.getElementById("auth-form").addEventListener("submit", e => {
+  e.preventDefault();
+  if (document.getElementById("pass").value === STAFF_PASS) {
+    try { localStorage.setItem("spec_auth","true"); } catch(e){}
+    authEl.hidden = true; qEl.focus();
+  } else { document.getElementById("pass-msg").textContent = "パスワードが違います"; }
+});
+
+fetch("menu-data.json?v=" + Date.now(), {cache:"no-store"}).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(raw => { prepare(raw); document.getElementById("count").textContent = `${DATA.length}品 ・ 試す:`; if (!fromHash()) render(qEl.value); window.addEventListener("hashchange", fromHash); })
+  .catch(() => { out.innerHTML = `<p class="msg">menu-data.json が読み込めませんでした。このページと同じ場所に menu-data.json を置いてください。</p>`; });
+</script>
+</body>
+</html>
